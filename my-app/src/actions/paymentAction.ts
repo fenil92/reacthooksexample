@@ -1,5 +1,5 @@
 import { PaymentDetail } from "../models/paymentDetail"
-import { ADD_PAYMENT_DETAILS, DELETE_PAYMENT_DETAILS, FETCH_PAYMENT_DETAILS, FETCH_PAYMENT_FAILURE, FETCH_PAYMENT_SUCCESS, SET_ACTIVE_PAGE } from "./paymentActionTypes"
+import { ADD_PAYMENT_DETAILS, DELETE_PAYMENT_DETAILS, FETCH_PAYMENT_DETAILS, FETCH_PAYMENT_FAILURE, FETCH_PAYMENT_SUCCESS, SET_ACTIVE_PAGE, UPDATE_PAYMENT_DETAILS } from "./paymentActionTypes"
 
 export const fetchPaymentRequest = () => {
     return {
@@ -24,6 +24,13 @@ export const fetchPaymentFailure = (error: string) => {
 export const AddPaymentAction = (payment: PaymentDetail) => {
     return {
         type: ADD_PAYMENT_DETAILS,
+        payload: payment
+    }
+}
+
+export const UpdatePaymentAction = (payment: PaymentDetail) => {
+    return {
+        type: UPDATE_PAYMENT_DETAILS,
         payload: payment
     }
 }

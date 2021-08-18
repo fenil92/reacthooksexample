@@ -5,6 +5,7 @@ import {
   FETCH_PAYMENT_FAILURE,
   FETCH_PAYMENT_SUCCESS,
   SET_ACTIVE_PAGE,
+  UPDATE_PAYMENT_DETAILS,
 } from "../actions/paymentActionTypes";
 import { PaymentDetail } from "../models/paymentDetail";
 
@@ -20,16 +21,20 @@ const initialState: PaymentState = {
   loading: false,
   data: [],
   error: "",
-  activePage:1,
-  activePageData: []
+  activePage: 1,
+  activePageData: [],
 };
 
-const initialPageSize= 3;
+const initialPageSize = 3;
 
-const paginate =(array: Array<any>, page_size: number = initialPageSize, page_number: number) => {
+const paginate = (
+  array: Array<any>,
+  page_size: number = initialPageSize,
+  page_number: number
+) => {
   // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
   return array.slice((page_number - 1) * page_size, page_number * page_size);
-}
+};
 
 const PaymentReducer = (
   state: PaymentState = initialState,
@@ -46,7 +51,7 @@ const PaymentReducer = (
         ...state,
         loading: false,
         data: action.payload,
-        error: ""
+        error: "",
       };
     case FETCH_PAYMENT_FAILURE:
       return {
@@ -66,13 +71,35 @@ const PaymentReducer = (
         ...state,
         data: state.data.filter((x) => x.paymentId !== action.payload),
       };
+    case UPDATE_PAYMENT_DETAILS:
+      const index = state.data.findIndex(
+        (x) => x.paymentId === action.payload.paymentId
+      ); //finding index of the item
+      const newArray = [...state.data]; //making a new array
+      newArray[index] = action.payload; //changing value in the new array
+      const updatepaginatedData = paginate(
+        newArray,
+        initialPageSize,
+        state.activePage
+      );
+
+      return {
+        ...state, //copying the orignal state
+        data: newArray, //reassingning data to new array
+        loading: false,
+        activePageData: updatepaginatedData
+      };
     case SET_ACTIVE_PAGE:
-      const paginatedData = paginate(state.data, initialPageSize, action.payload)
-      return{
+      const paginatedData = paginate(
+        state.data,
+        initialPageSize,
+        action.payload
+      );
+      return {
         ...state,
         activePage: action.payload,
-        activePageData: paginatedData
-      }
+        activePageData: paginatedData,
+      };
     default:
       return state;
   }

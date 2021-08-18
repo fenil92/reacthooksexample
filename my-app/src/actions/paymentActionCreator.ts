@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { PaymentDetail } from '../models/paymentDetail';
-import { AddPaymentAction, DeletePaymentAction, fetchPaymentFailure, fetchPaymentRequest, fetchPaymentSuccess, SetActivePageAction } from './paymentAction';
+import { AddPaymentAction, DeletePaymentAction, fetchPaymentFailure, fetchPaymentRequest, fetchPaymentSuccess, SetActivePageAction, UpdatePaymentAction } from './paymentAction';
 const baseUri = "http://localhost:5000/api/Paymentdetails"
 
 export const fetchPaymentList = () => {
@@ -31,6 +31,28 @@ export const postPaymentDetail = (paymentDetail: PaymentDetail) => {
         .then(response => {
             const data: PaymentDetail = response.data;
             dispatch(AddPaymentAction(data))
+        })
+        .catch(error =>{
+            const errMessage = error.message;
+            dispatch(fetchPaymentFailure(errMessage))
+        })
+    }
+}
+
+export const putPaymentDetail = (id:number, paymentDetail: PaymentDetail) => {
+    return (dispatch: any) => {
+        dispatch(fetchPaymentRequest);
+        axios.put(`${baseUri}/${id}`, 
+        JSON.stringify(paymentDetail), {
+            headers: { 
+                'Content-Type' : 'application/json' 
+            }
+        })
+        .then(response => {
+            console.log(response);
+            if(response.status === 204){
+                dispatch(UpdatePaymentAction(paymentDetail))
+            }
         })
         .catch(error =>{
             const errMessage = error.message;

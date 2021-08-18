@@ -6,7 +6,7 @@ import { PaymentDetail } from '../models/paymentDetail';
 import Pagination from "react-js-pagination";
 
 
-const PaymentList = () => {
+const PaymentList = (props:any) => {
     const payments = useSelector((state: any)=> state.PaymentReducer);
     const dispatch = useDispatch();
     const {fetchPaymentList, deletePaymentDetail, setActivePage} = bindActionCreators(actionCreators,dispatch);
@@ -26,6 +26,7 @@ const PaymentList = () => {
         <td>{detail.cardNumber}</td>
         <td>{detail.securityCode}</td>
         <td>{detail.expirationDate}</td>
+        <td>{<button onClick={() => props.handleFormUpdate(detail)} className="btn btn-outline-primary">Update</button>}</td>
         <td>{<button onClick={() => handleDelete(detail.paymentId!)} className="btn btn-outline-danger">Delete</button>}</td>
         </tr>)
     })
